@@ -6,6 +6,10 @@ readme = "README.md"
 requires-python = ">=3.8, <4.0"
 dependencies = [
     "httpx>=0.24.1",
+    "Brotli==1.0.9",
+    "pure-protobuf==3.0.0a5",
+    "yarl==1.8.2"
+
 ]
 
 [tool.nonebot]
@@ -13,7 +17,7 @@ adapters = [
     # { name = "Console", module_name = "nonebot.adapters.console" },
     { name = "BilibiliLive", module_name = "nonebot.adapters.bilibili" }
 ]
-plugins = []
+plugins = ["nonebot_plugin_tts_gal"]
 plugin_dirs = ["bili/plugins"]
 builtin_plugins = []
 
