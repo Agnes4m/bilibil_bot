@@ -1,5 +1,5 @@
 [project]
-name = "bili"
+name = "bilibili_live"
 version = "0.1.0"
 description = "bili"
 readme = "README.md"
@@ -11,15 +11,6 @@ dependencies = [
     "yarl==1.8.2"
 
 ]
-
-[tool.nonebot]
-adapters = [
-    # { name = "Console", module_name = "nonebot.adapters.console" },
-    { name = "BilibiliLive", module_name = "nonebot.adapters.bilibili" }
-]
-plugins = ["nonebot_plugin_tts_gal"]
-plugin_dirs = ["bili/plugins"]
-builtin_plugins = []
 
 [tool.pdm.build]
 includes = []
