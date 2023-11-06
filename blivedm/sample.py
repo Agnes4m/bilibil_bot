@@ -1,8 +1,9 @@
 # -*- coding: utf-8 -*-
 import asyncio
 import http.cookies
-from typing import List, Optional, Dict
 from pathlib import Path
+from typing import Dict, Optional
+
 import aiohttp
 import yaml
 
@@ -88,19 +89,23 @@ class MyHandler(blivedm.BaseHandler):
     def _on_gift(self, client: blivedm.BLiveClient, message: web_models.GiftMessage):
         print(
             f"[{client.room_id}] {message.uname} 赠送{message.gift_name}x{message.num}"
-            f" （{message.coin_type}瓜子x{message.total_coin}）"
+            f" （{message.coin_type}瓜子x{message.total_coin}）",
         )
 
     def _on_buy_guard(
-        self, client: blivedm.BLiveClient, message: web_models.GuardBuyMessage
+        self,
+        client: blivedm.BLiveClient,
+        message: web_models.GuardBuyMessage,
     ):
         print(f"[{client.room_id}] {message.username} 购买{message.gift_name}")
 
     def _on_super_chat(
-        self, client: blivedm.BLiveClient, message: web_models.SuperChatMessage
+        self,
+        client: blivedm.BLiveClient,
+        message: web_models.SuperChatMessage,
     ):
         print(
-            f"[{client.room_id}] 醒目留言 ¥{message.price} {message.uname}：{message.message}"
+            f"[{client.room_id}] 醒目留言 ¥{message.price} {message.uname}：{message.message}",
         )
 
 
