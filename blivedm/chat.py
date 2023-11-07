@@ -4,7 +4,6 @@ from typing import Dict, List
 
 import simpleaudio as sa
 
-from bili.plugins.nonebot_plugin_tts_gal.nonebot_plugin_tts_gal import send_voicHandler
 from blivedm.models.web import DanmakuMessage
 
 try:
@@ -44,7 +43,7 @@ async def msg_push(msg_info: DanmakuMessage):
     """从字典中返回结果"""
     anime_thesaurus_path = Path("data/data.json")
     anime_thesaurus: Dict[str, List[str]] = json.load(
-        anime_thesaurus_path.open("r", encoding="utf-8")
+        anime_thesaurus_path.open("r", encoding="utf-8"),
     )
     send_msg = None
     keys = anime_thesaurus.keys()

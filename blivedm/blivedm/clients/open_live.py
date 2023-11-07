@@ -12,15 +12,13 @@ import aiohttp
 
 from . import ws_base
 
-__all__ = (
-    'OpenLiveClient',
-)
+__all__ = ("OpenLiveClient",)
 
-logger = logging.getLogger('blivedm')
+logger = logging.getLogger("blivedm")
 
-START_URL = 'https://live-open.biliapi.com/v2/app/start'
-HEARTBEAT_URL = 'https://live-open.biliapi.com/v2/app/heartbeat'
-END_URL = 'https://live-open.biliapi.com/v2/app/end'
+START_URL = "https://live-open.biliapi.com/v2/app/start"
+HEARTBEAT_URL = "https://live-open.biliapi.com/v2/app/heartbeat"
+END_URL = "https://live-open.biliapi.com/v2/app/end"
 
 
 class OpenLiveClient(ws_base.WebSocketClientBase):
@@ -104,7 +102,9 @@ class OpenLiveClient(ws_base.WebSocketClientBase):
         释放本客户端的资源，调用后本客户端将不可用
         """
         if self.is_running:
-            logger.warning('room=%s is calling close(), but client is running', self.room_id)
+            logger.warning(
+                "room=%s is calling close(), but client is running", self.room_id
+            )
 
         if self._game_heartbeat_timer_handle is not None:
             self._game_heartbeat_timer_handle.cancel()
@@ -114,27 +114,26 @@ class OpenLiveClient(ws_base.WebSocketClientBase):
         await super().close()
 
     def _request_open_live(self, url, body: dict):
-        body_bytes = json.dumps(body).encode('utf-8')
+        body_bytes = json.dumps(body).encode("utf-8")
         headers = {
-            'x-bili-accesskeyid': self._access_key_id,
-            'x-bili-content-md5': hashlib.md5(body_bytes).hexdigest(),
-            'x-bili-signature-method': 'HMAC-SHA256',
-            'x-bili-signature-nonce': str(random.randint(0, 999999999)),
-            'x-bili-signature-version': '1.0',
-            'x-bili-timestamp': str(int(datetime.datetime.now().timestamp())),
+            "x-bili-accesskeyid": self._access_key_id,
+            "x-bili-content-md5": hashlib.md5(body_bytes).hexdigest(),
+            "x-bili-signature-method": "HMAC-SHA256",
+            "x-bili-signature-nonce": str(random.randint(0, 999999999)),
+            "x-bili-signature-version": "1.0",
+            "x-bili-timestamp": str(int(datetime.datetime.now().timestamp())),
         }
 
-        str_to_sign = '\n'.join(
-            f'{key}:{value}'
-            for key, value in headers.items()
-        )
+        str_to_sign = "\n".join(f"{key}:{value}" for key, value in headers.items())
         signature = hmac.new(
-            self._access_key_secret.encode('utf-8'), str_to_sign.encode('utf-8'), hashlib.sha256
+            self._access_key_secret.encode("utf-8"),
+            str_to_sign.encode("utf-8"),
+            hashlib.sha256,
         ).hexdigest()
-        headers['Authorization'] = signature
+        headers["Authorization"] = signature
 
-        headers['Content-Type'] = 'application/json'
-        headers['Accept'] = 'application/json'
+        headers["Content-Type"] = "application/json"
+        headers["Accept"] = "application/json"
         return self._session.post(url, headers=headers, data=body_bytes)
 
     async def init_room(self):
@@ -146,9 +145,10 @@ class OpenLiveClient(ws_base.WebSocketClientBase):
         if not await self._start_game():
             return False
 
-        if self._game_id != '' and self._game_heartbeat_timer_handle is None:
+        if self._game_id != "" and self._game_heartbeat_timer_handle is None:
             self._game_heartbeat_timer_handle = asyncio.get_running_loop().call_later(
-                self._game_heartbeat_interval, self._on_send_game_heartbeat
+                self._game_heartbeat_interval,
+                self._on_send_game_heartbeat,
             )
         return True
 
@@ -156,61 +156,78 @@ class OpenLiveClient(ws_base.WebSocketClientBase):
         try:
             async with self._request_open_live(
                 START_URL,
-                {'code': self._room_owner_auth_code, 'app_id': self._app_id}
+                {"code": self._room_owner_auth_code, "app_id": self._app_id},
             ) as res:
                 if res.status != 200:
-                    logger.warning('_start_game() failed, status=%d, reason=%s', res.status, res.reason)
+                    logger.warning(
+                        "_start_game() failed, status=%d, reason=%s",
+                        res.status,
+                        res.reason,
+                    )
                     return False
                 data = await res.json()
-                if data['code'] != 0:
-                    logger.warning('_start_game() failed, code=%d, message=%s, request_id=%s',
-                                   data['code'], data['message'], data['request_id'])
+                if data["code"] != 0:
+                    logger.warning(
+                        "_start_game() failed, code=%d, message=%s, request_id=%s",
+                        data["code"],
+                        data["message"],
+                        data["request_id"],
+                    )
                     return False
-                if not self._parse_start_game(data['data']):
+                if not self._parse_start_game(data["data"]):
                     return False
         except (aiohttp.ClientConnectionError, asyncio.TimeoutError):
-            logger.exception('_start_game() failed:')
+            logger.exception("_start_game() failed:")
             return False
         return True
 
     def _parse_start_game(self, data):
-        self._game_id = data['game_info']['game_id']
-        websocket_info = data['websocket_info']
-        self._auth_body = websocket_info['auth_body']
-        self._host_server_url_list = websocket_info['wss_link']
-        anchor_info = data['anchor_info']
-        self._room_id = anchor_info['room_id']
-        self._room_owner_uid = anchor_info['uid']
+        self._game_id = data["game_info"]["game_id"]
+        websocket_info = data["websocket_info"]
+        self._auth_body = websocket_info["auth_body"]
+        self._host_server_url_list = websocket_info["wss_link"]
+        anchor_info = data["anchor_info"]
+        self._room_id = anchor_info["room_id"]
+        self._room_owner_uid = anchor_info["uid"]
         return True
 
     async def _end_game(self):
         """
         关闭项目。建议关闭客户端时保证调用到这个函数（close会调用），否则可能短时间内无法重复连接同一个房间
         """
-        if self._game_id in (None, ''):
+        if self._game_id in (None, ""):
             return True
 
         try:
             async with self._request_open_live(
                 END_URL,
-                {'app_id': self._app_id, 'game_id': self._game_id}
+                {"app_id": self._app_id, "game_id": self._game_id},
             ) as res:
                 if res.status != 200:
-                    logger.warning('room=%d _end_game() failed, status=%d, reason=%s',
-                                   self._room_id, res.status, res.reason)
+                    logger.warning(
+                        "room=%d _end_game() failed, status=%d, reason=%s",
+                        self._room_id,
+                        res.status,
+                        res.reason,
+                    )
                     return False
                 data = await res.json()
-                code = data['code']
+                code = data["code"]
                 if code != 0:
                     if code in (7000, 7003):
                         # 项目已经关闭了也算成功
                         return True
 
-                    logger.warning('room=%d _end_game() failed, code=%d, message=%s, request_id=%s',
-                                   self._room_id, code, data['message'], data['request_id'])
+                    logger.warning(
+                        "room=%d _end_game() failed, code=%d, message=%s, request_id=%s",
+                        self._room_id,
+                        code,
+                        data["message"],
+                        data["request_id"],
+                    )
                     return False
         except (aiohttp.ClientConnectionError, asyncio.TimeoutError):
-            logger.exception('room=%d _end_game() failed:', self._room_id)
+            logger.exception("room=%d _end_game() failed:", self._room_id)
             return False
         return True
 
@@ -219,7 +236,8 @@ class OpenLiveClient(ws_base.WebSocketClientBase):
         定时发送项目心跳包的回调
         """
         self._game_heartbeat_timer_handle = asyncio.get_running_loop().call_later(
-            self._game_heartbeat_interval, self._on_send_game_heartbeat
+            self._game_heartbeat_interval,
+            self._on_send_game_heartbeat,
         )
         asyncio.create_task(self._send_game_heartbeat())
 
@@ -227,8 +245,10 @@ class OpenLiveClient(ws_base.WebSocketClientBase):
         """
         发送项目心跳包
         """
-        if self._game_id in (None, ''):
-            logger.warning('game=%d _send_game_heartbeat() failed, game_id not found', self._game_id)
+        if self._game_id in (None, ""):
+            logger.warning(
+                "game=%d _send_game_heartbeat() failed, game_id not found", self._game_id
+            )
             return False
 
         try:
@@ -236,17 +256,26 @@ class OpenLiveClient(ws_base.WebSocketClientBase):
             game_id = self._game_id
             async with self._request_open_live(
                 HEARTBEAT_URL,
-                {'game_id': game_id}
+                {"game_id": game_id},
             ) as res:
                 if res.status != 200:
-                    logger.warning('room=%d _send_game_heartbeat() failed, status=%d, reason=%s',
-                                   self._room_id, res.status, res.reason)
+                    logger.warning(
+                        "room=%d _send_game_heartbeat() failed, status=%d, reason=%s",
+                        self._room_id,
+                        res.status,
+                        res.reason,
+                    )
                     return False
                 data = await res.json()
-                code = data['code']
+                code = data["code"]
                 if code != 0:
-                    logger.warning('room=%d _send_game_heartbeat() failed, code=%d, message=%s, request_id=%s',
-                                   self._room_id, code, data['message'], data['request_id'])
+                    logger.warning(
+                        "room=%d _send_game_heartbeat() failed, code=%d, message=%s, request_id=%s",
+                        self._room_id,
+                        code,
+                        data["message"],
+                        data["request_id"],
+                    )
 
                     if code == 7003 and self._game_id == game_id:
                         # 项目异常关闭，可能是心跳超时，需要重新开启项目
@@ -256,7 +285,7 @@ class OpenLiveClient(ws_base.WebSocketClientBase):
 
                     return False
         except (aiohttp.ClientConnectionError, asyncio.TimeoutError):
-            logger.exception('room=%d _send_game_heartbeat() failed:', self._room_id)
+            logger.exception("room=%d _send_game_heartbeat() failed:", self._room_id)
             return False
         return True
 
@@ -280,4 +309,6 @@ class OpenLiveClient(ws_base.WebSocketClientBase):
         """
         发送认证包
         """
-        await self._websocket.send_bytes(self._make_packet(self._auth_body, ws_base.Operation.AUTH))
+        await self._websocket.send_bytes(
+            self._make_packet(self._auth_body, ws_base.Operation.AUTH)
+        )

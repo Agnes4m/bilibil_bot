@@ -3,12 +3,12 @@ import dataclasses
 from typing import *
 
 __all__ = (
-    'DanmakuMessage',
-    'GiftMessage',
-    'GuardBuyMessage',
-    'SuperChatMessage',
-    'SuperChatDeleteMessage',
-    'LikeMessage',
+    "DanmakuMessage",
+    "GiftMessage",
+    "GuardBuyMessage",
+    "SuperChatMessage",
+    "SuperChatDeleteMessage",
+    "LikeMessage",
 )
 
 # 注释都是复制自官方文档的，看不懂的话问B站
@@ -21,29 +21,29 @@ class DanmakuMessage:
     弹幕消息
     """
 
-    uname: str = ''
+    uname: str = ""
     """用户昵称"""
     uid: int = 0
     """用户UID"""
-    uface: str = ''
+    uface: str = ""
     """用户头像"""
     timestamp: int = 0
     """弹幕发送时间秒级时间戳"""
     room_id: int = 0
     """弹幕接收的直播间"""
-    msg: str = ''
+    msg: str = ""
     """弹幕内容"""
-    msg_id: str = ''
+    msg_id: str = ""
     """消息唯一id"""
     guard_level: int = 0
     """对应房间大航海等级"""
     fans_medal_wearing_status: bool = False
     """该房间粉丝勋章佩戴情况"""
-    fans_medal_name: str = ''
+    fans_medal_name: str = ""
     """粉丝勋章名"""
     fans_medal_level: int = 0
     """对应房间勋章信息"""
-    emoji_img_url: str = ''
+    emoji_img_url: str = ""
     """表情包图片地址"""
     dm_type: int = 0
     """弹幕类型 0：普通弹幕 1：表情包弹幕"""
@@ -51,19 +51,19 @@ class DanmakuMessage:
     @classmethod
     def from_command(cls, data: dict):
         return cls(
-            uname=data['uname'],
-            uid=data['uid'],
-            uface=data['uface'],
-            timestamp=data['timestamp'],
-            room_id=data['room_id'],
-            msg=data['msg'],
-            msg_id=data['msg_id'],
-            guard_level=data['guard_level'],
-            fans_medal_wearing_status=data['fans_medal_wearing_status'],
-            fans_medal_name=data['fans_medal_name'],
-            fans_medal_level=data['fans_medal_level'],
-            emoji_img_url=data['emoji_img_url'],
-            dm_type=data['dm_type'],
+            uname=data["uname"],
+            uid=data["uid"],
+            uface=data["uface"],
+            timestamp=data["timestamp"],
+            room_id=data["room_id"],
+            msg=data["msg"],
+            msg_id=data["msg_id"],
+            guard_level=data["guard_level"],
+            fans_medal_wearing_status=data["fans_medal_wearing_status"],
+            fans_medal_name=data["fans_medal_name"],
+            fans_medal_level=data["fans_medal_level"],
+            emoji_img_url=data["emoji_img_url"],
+            dm_type=data["dm_type"],
         )
 
 
@@ -75,17 +75,17 @@ class AnchorInfo:
 
     uid: int = 0
     """收礼主播uid"""
-    uname: str = ''
+    uname: str = ""
     """收礼主播昵称"""
-    uface: str = ''
+    uface: str = ""
     """收礼主播头像"""
 
     @classmethod
     def from_dict(cls, data: dict):
         return cls(
-            uid=data['uid'],
-            uname=data['uname'],
-            uface=data['uface'],
+            uid=data["uid"],
+            uname=data["uname"],
+            uface=data["uface"],
         )
 
 
@@ -99,7 +99,7 @@ class ComboInfo:
     """每次连击赠送的道具数量"""
     combo_count: int = 0
     """连击次数"""
-    combo_id: str = ''
+    combo_id: str = ""
     """连击id"""
     combo_timeout: int = 0
     """连击有效期秒"""
@@ -107,10 +107,10 @@ class ComboInfo:
     @classmethod
     def from_dict(cls, data: dict):
         return cls(
-            combo_base_num=data['combo_base_num'],
-            combo_count=data['combo_count'],
-            combo_id=data['combo_id'],
-            combo_timeout=data['combo_timeout'],
+            combo_base_num=data["combo_base_num"],
+            combo_count=data["combo_count"],
+            combo_id=data["combo_id"],
+            combo_timeout=data["combo_timeout"],
         )
 
 
@@ -124,13 +124,13 @@ class GiftMessage:
     """房间号"""
     uid: int = 0
     """送礼用户UID"""
-    uname: str = ''
+    uname: str = ""
     """送礼用户昵称"""
-    uface: str = ''
+    uface: str = ""
     """送礼用户头像"""
     gift_id: int = 0
     """道具id(盲盒:爆出道具id)"""
-    gift_name: str = ''
+    gift_name: str = ""
     """道具名(盲盒:爆出道具名)"""
     gift_num: int = 0
     """赠送道具数量"""
@@ -140,7 +140,7 @@ class GiftMessage:
     """是否是付费道具"""
     fans_medal_level: int = 0
     """实际送礼人的勋章信息"""
-    fans_medal_name: str = ''
+    fans_medal_name: str = ""
     """粉丝勋章名"""
     fans_medal_wearing_status: bool = False
     """该房间粉丝勋章佩戴情况"""
@@ -150,9 +150,9 @@ class GiftMessage:
     """收礼时间秒级时间戳"""
     anchor_info: AnchorInfo = dataclasses.field(default_factory=AnchorInfo)
     """主播信息"""
-    msg_id: str = ''
+    msg_id: str = ""
     """消息唯一id"""
-    gift_icon: str = ''
+    gift_icon: str = ""
     """道具icon"""
     combo_gift: bool = False
     """是否是combo道具"""
@@ -161,31 +161,31 @@ class GiftMessage:
 
     @classmethod
     def from_command(cls, data: dict):
-        combo_info = data.get('combo_info', None)
+        combo_info = data.get("combo_info", None)
         if combo_info is None:
             combo_info = ComboInfo()
         else:
             combo_info = ComboInfo.from_dict(combo_info)
 
         return cls(
-            room_id=data['room_id'],
-            uid=data['uid'],
-            uname=data['uname'],
-            uface=data['uface'],
-            gift_id=data['gift_id'],
-            gift_name=data['gift_name'],
-            gift_num=data['gift_num'],
-            price=data['price'],
-            paid=data['paid'],
-            fans_medal_level=data['fans_medal_level'],
-            fans_medal_name=data['fans_medal_name'],
-            fans_medal_wearing_status=data['fans_medal_wearing_status'],
-            guard_level=data['guard_level'],
-            timestamp=data['timestamp'],
-            anchor_info=AnchorInfo.from_dict(data['anchor_info']),
-            msg_id=data['msg_id'],
-            gift_icon=data['gift_icon'],
-            combo_gift=data.get('combo_gift', False),  # 官方的调试工具没发这个字段
+            room_id=data["room_id"],
+            uid=data["uid"],
+            uname=data["uname"],
+            uface=data["uface"],
+            gift_id=data["gift_id"],
+            gift_name=data["gift_name"],
+            gift_num=data["gift_num"],
+            price=data["price"],
+            paid=data["paid"],
+            fans_medal_level=data["fans_medal_level"],
+            fans_medal_name=data["fans_medal_name"],
+            fans_medal_wearing_status=data["fans_medal_wearing_status"],
+            guard_level=data["guard_level"],
+            timestamp=data["timestamp"],
+            anchor_info=AnchorInfo.from_dict(data["anchor_info"]),
+            msg_id=data["msg_id"],
+            gift_icon=data["gift_icon"],
+            combo_gift=data.get("combo_gift", False),  # 官方的调试工具没发这个字段
             combo_info=combo_info,  # 官方的调试工具没发这个字段
         )
 
@@ -198,17 +198,17 @@ class UserInfo:
 
     uid: int = 0
     """用户uid"""
-    uname: str = ''
+    uname: str = ""
     """用户昵称"""
-    uface: str = ''
+    uface: str = ""
     """用户头像"""
 
     @classmethod
     def from_dict(cls, data: dict):
         return cls(
-            uid=data['uid'],
-            uname=data['uname'],
-            uface=data['uface'],
+            uid=data["uid"],
+            uname=data["uname"],
+            uface=data["uface"],
         )
 
 
@@ -224,17 +224,17 @@ class GuardBuyMessage:
     """大航海等级"""
     guard_num: int = 0
     """大航海数量"""
-    guard_unit: str = ''
+    guard_unit: str = ""
     """大航海单位"""
     fans_medal_level: int = 0
     """粉丝勋章等级"""
-    fans_medal_name: str = ''
+    fans_medal_name: str = ""
     """粉丝勋章名"""
     fans_medal_wearing_status: bool = False
     """该房间粉丝勋章佩戴情况"""
     room_id: int = 0
     """房间号"""
-    msg_id: str = ''
+    msg_id: str = ""
     """消息唯一id"""
     timestamp: int = 0
     """上舰时间秒级时间戳"""
@@ -242,16 +242,16 @@ class GuardBuyMessage:
     @classmethod
     def from_command(cls, data: dict):
         return cls(
-            user_info=UserInfo.from_dict(data['user_info']),
-            guard_level=data['guard_level'],
-            guard_num=data['guard_num'],
-            guard_unit=data['guard_unit'],
-            fans_medal_level=data['fans_medal_level'],
-            fans_medal_name=data['fans_medal_name'],
-            fans_medal_wearing_status=data['fans_medal_wearing_status'],
-            room_id=data['room_id'],
-            msg_id=data['msg_id'],
-            timestamp=data['timestamp'],
+            user_info=UserInfo.from_dict(data["user_info"]),
+            guard_level=data["guard_level"],
+            guard_num=data["guard_num"],
+            guard_unit=data["guard_unit"],
+            fans_medal_level=data["fans_medal_level"],
+            fans_medal_name=data["fans_medal_name"],
+            fans_medal_wearing_status=data["fans_medal_wearing_status"],
+            room_id=data["room_id"],
+            msg_id=data["msg_id"],
+            timestamp=data["timestamp"],
         )
 
 
@@ -265,13 +265,13 @@ class SuperChatMessage:
     """直播间id"""
     uid: int = 0
     """购买用户UID"""
-    uname: str = ''
+    uname: str = ""
     """购买的用户昵称"""
-    uface: str = ''
+    uface: str = ""
     """购买用户头像"""
     message_id: int = 0
     """留言id(风控场景下撤回留言需要)"""
-    message: str = ''
+    message: str = ""
     """留言内容"""
     rmb: int = 0
     """支付金额(元)"""
@@ -285,31 +285,31 @@ class SuperChatMessage:
     """对应房间大航海等级"""
     fans_medal_level: int = 0
     """对应房间勋章信息"""
-    fans_medal_name: str = ''
+    fans_medal_name: str = ""
     """对应房间勋章名字"""
     fans_medal_wearing_status: bool = False
     """该房间粉丝勋章佩戴情况"""
-    msg_id: str = ''
+    msg_id: str = ""
     """消息唯一id"""
 
     @classmethod
     def from_command(cls, data: dict):
         return cls(
-            room_id=data['room_id'],
-            uid=data['uid'],
-            uname=data['uname'],
-            uface=data['uface'],
-            message_id=data['message_id'],
-            message=data['message'],
-            rmb=data['rmb'],
-            timestamp=data['timestamp'],
-            start_time=data['start_time'],
-            end_time=data['end_time'],
-            guard_level=data['guard_level'],
-            fans_medal_level=data['fans_medal_level'],
-            fans_medal_name=data['fans_medal_name'],
-            fans_medal_wearing_status=data['fans_medal_wearing_status'],
-            msg_id=data['msg_id'],
+            room_id=data["room_id"],
+            uid=data["uid"],
+            uname=data["uname"],
+            uface=data["uface"],
+            message_id=data["message_id"],
+            message=data["message"],
+            rmb=data["rmb"],
+            timestamp=data["timestamp"],
+            start_time=data["start_time"],
+            end_time=data["end_time"],
+            guard_level=data["guard_level"],
+            fans_medal_level=data["fans_medal_level"],
+            fans_medal_name=data["fans_medal_name"],
+            fans_medal_wearing_status=data["fans_medal_wearing_status"],
+            msg_id=data["msg_id"],
         )
 
 
@@ -323,15 +323,15 @@ class SuperChatDeleteMessage:
     """直播间id"""
     message_ids: List[int] = dataclasses.field(default_factory=list)
     """留言id"""
-    msg_id: str = ''
+    msg_id: str = ""
     """消息唯一id"""
 
     @classmethod
     def from_command(cls, data: dict):
         return cls(
-            room_id=data['room_id'],
-            message_ids=data['message_ids'],
-            msg_id=data['msg_id'],
+            room_id=data["room_id"],
+            message_ids=data["message_ids"],
+            msg_id=data["msg_id"],
         )
 
 
@@ -343,38 +343,38 @@ class LikeMessage:
     请注意：用户端每分钟触发若干次的情况下只会推送一次该消息
     """
 
-    uname: str = ''
+    uname: str = ""
     """用户昵称"""
     uid: int = 0
     """用户UID"""
-    uface: str = ''
+    uface: str = ""
     """用户头像"""
     # timestamp: int = 0  # 官方文档里有这个字段，实际上没有
     # """时间秒级时间戳"""
     room_id: int = 0
     """发生的直播间"""
-    like_text: str = ''
+    like_text: str = ""
     """点赞文案(“xxx点赞了”)"""
     fans_medal_wearing_status: bool = False
     """该房间粉丝勋章佩戴情况"""
-    fans_medal_name: str = ''
+    fans_medal_name: str = ""
     """粉丝勋章名"""
     fans_medal_level: int = 0
     """对应房间勋章信息"""
-    msg_id: str = ''  # 官方文档表格里没列出这个字段，但是参考JSON里面有
+    msg_id: str = ""  # 官方文档表格里没列出这个字段，但是参考JSON里面有
     """消息唯一id"""
 
     @classmethod
     def from_command(cls, data: dict):
         return cls(
-            uname=data['uname'],
-            uid=data['uid'],
-            uface=data['uface'],
+            uname=data["uname"],
+            uid=data["uid"],
+            uface=data["uface"],
             # timestamp=data['timestamp'],  # 官方文档里有这个字段，实际上没有
-            room_id=data['room_id'],
-            like_text=data['like_text'],
-            fans_medal_wearing_status=data['fans_medal_wearing_status'],
-            fans_medal_name=data['fans_medal_name'],
-            fans_medal_level=data['fans_medal_level'],
-            msg_id=data.get('msg_id', ''),  # 官方文档表格里没列出这个字段，但是参考JSON里面有
+            room_id=data["room_id"],
+            like_text=data["like_text"],
+            fans_medal_wearing_status=data["fans_medal_wearing_status"],
+            fans_medal_name=data["fans_medal_name"],
+            fans_medal_level=data["fans_medal_level"],
+            msg_id=data.get("msg_id", ""),  # 官方文档表格里没列出这个字段，但是参考JSON里面有
         )
