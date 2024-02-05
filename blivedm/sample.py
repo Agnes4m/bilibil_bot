@@ -10,10 +10,14 @@ import yaml
 import blivedm
 import blivedm.models.web as web_models
 
-with Path(__file__).parent.parent.joinpath("config.yml").open(
-    "r",
-    encoding="utf-8",
-) as f:
+with (
+    Path(__file__)
+    .parent.parent.joinpath("config.yml")
+    .open(
+        "r",
+        encoding="utf-8",
+    ) as f
+):
     config: Dict = yaml.safe_load(f)
     TEST_ROOM_IDS = config["TEST_ROOM_IDS"]
     SESSDATA = config["SESSDATA"]

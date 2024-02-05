@@ -20,7 +20,7 @@ class SimpleUser(pb_msg.BaseMessage):
 @dataclasses.dataclass
 class SimpleDm(pb_msg.BaseMessage):
     user: Annotated[SimpleUser, pb_anno.Field(20)] = dataclasses.field(
-        default_factory=SimpleUser
+        default_factory=SimpleUser,
     )
 
 
@@ -67,7 +67,7 @@ class Emoticon(pb_msg.BaseMessage):
 class EmoticonMapEntry(pb_msg.BaseMessage):
     key: Annotated[str, pb_anno.Field(1)] = ""
     value: Annotated[Emoticon, pb_anno.Field(2)] = dataclasses.field(
-        default_factory=Emoticon
+        default_factory=Emoticon,
     )
 
 
@@ -148,14 +148,14 @@ class User(pb_msg.BaseMessage):
     attr: Annotated[int, pb_anno.Field(10)] = 0
     medal: Annotated[Medal, pb_anno.Field(11)] = dataclasses.field(default_factory=Medal)
     level: Annotated[UserLevel, pb_anno.Field(12)] = dataclasses.field(
-        default_factory=UserLevel
+        default_factory=UserLevel,
     )
     title: Annotated[Title, pb_anno.Field(13)] = dataclasses.field(default_factory=Title)
     identify: Annotated[Identify, pb_anno.Field(14)] = dataclasses.field(
-        default_factory=Identify
+        default_factory=Identify,
     )
     wealth: Annotated[Wealth, pb_anno.Field(15)] = dataclasses.field(
-        default_factory=Wealth
+        default_factory=Wealth,
     )
 
 
@@ -174,7 +174,7 @@ class Prefix(pb_msg.BaseMessage):
 @dataclasses.dataclass
 class Icon(pb_msg.BaseMessage):
     prefix: Annotated[Prefix, pb_anno.Field(1)] = dataclasses.field(
-        default_factory=Prefix
+        default_factory=Prefix,
     )
 
 
@@ -194,17 +194,17 @@ class Dm(pb_msg.BaseMessage):
     # biz_scene: Annotated[BizScene, pb_anno.Field(11)] = BizScene.None_
     biz_scene: Annotated[int, pb_anno.Field(11)] = 0
     bubble: Annotated[Bubble, pb_anno.Field(12)] = dataclasses.field(
-        default_factory=Bubble
+        default_factory=Bubble,
     )
     # dm_type: Annotated[DmType, pb_anno.Field(13)] = DmType.Normal
     dm_type: Annotated[int, pb_anno.Field(13)] = 0
     emoticons: Annotated[List[EmoticonMapEntry], pb_anno.Field(14)] = dataclasses.field(
-        default_factory=list
+        default_factory=list,
     )
     voice: Annotated[Voice, pb_anno.Field(15)] = dataclasses.field(default_factory=Voice)
     animation: Annotated[str, pb_anno.Field(16)] = ""
     aggregation: Annotated[Aggregation, pb_anno.Field(17)] = dataclasses.field(
-        default_factory=Aggregation
+        default_factory=Aggregation,
     )
     send_from_me: Annotated[bool, pb_anno.Field(18)] = False
     check: Annotated[Check, pb_anno.Field(19)] = dataclasses.field(default_factory=Check)

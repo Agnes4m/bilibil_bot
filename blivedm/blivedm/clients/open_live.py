@@ -103,7 +103,8 @@ class OpenLiveClient(ws_base.WebSocketClientBase):
         """
         if self.is_running:
             logger.warning(
-                "room=%s is calling close(), but client is running", self.room_id
+                "room=%s is calling close(), but client is running",
+                self.room_id,
             )
 
         if self._game_heartbeat_timer_handle is not None:
@@ -247,7 +248,8 @@ class OpenLiveClient(ws_base.WebSocketClientBase):
         """
         if self._game_id in (None, ""):
             logger.warning(
-                "game=%d _send_game_heartbeat() failed, game_id not found", self._game_id
+                "game=%d _send_game_heartbeat() failed, game_id not found",
+                self._game_id,
             )
             return False
 
@@ -310,5 +312,5 @@ class OpenLiveClient(ws_base.WebSocketClientBase):
         发送认证包
         """
         await self._websocket.send_bytes(
-            self._make_packet(self._auth_body, ws_base.Operation.AUTH)
+            self._make_packet(self._auth_body, ws_base.Operation.AUTH),
         )

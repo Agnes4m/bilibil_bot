@@ -161,7 +161,7 @@ class GiftMessage:
 
     @classmethod
     def from_command(cls, data: dict):
-        combo_info = data.get("combo_info", None)
+        combo_info = data.get("combo_info")
         if combo_info is None:
             combo_info = ComboInfo()
         else:
@@ -376,5 +376,7 @@ class LikeMessage:
             fans_medal_wearing_status=data["fans_medal_wearing_status"],
             fans_medal_name=data["fans_medal_name"],
             fans_medal_level=data["fans_medal_level"],
-            msg_id=data.get("msg_id", ""),  # 官方文档表格里没列出这个字段，但是参考JSON里面有
+            msg_id=data.get(
+                "msg_id", ""
+            ),  # 官方文档表格里没列出这个字段，但是参考JSON里面有
         )
