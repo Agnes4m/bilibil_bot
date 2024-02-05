@@ -89,7 +89,7 @@ class WebSocketClientBase:
     ):
         if session is None:
             self._session = aiohttp.ClientSession(
-                timeout=aiohttp.ClientTimeout(total=10)
+                timeout=aiohttp.ClientTimeout(total=10),
             )
             self._own_session = True
         else:
@@ -145,7 +145,8 @@ class WebSocketClientBase:
         """
         if self.is_running:
             logger.warning(
-                "room=%s client is running, cannot start() again", self.room_id
+                "room=%s client is running, cannot start() again",
+                self.room_id,
             )
             return
 
@@ -157,7 +158,8 @@ class WebSocketClientBase:
         """
         if not self.is_running:
             logger.warning(
-                "room=%s client is stopped, cannot stop() again", self.room_id
+                "room=%s client is stopped, cannot stop() again",
+                self.room_id,
             )
             return
 
@@ -188,7 +190,8 @@ class WebSocketClientBase:
         """
         if self.is_running:
             logger.warning(
-                "room=%s is calling close(), but client is running", self.room_id
+                "room=%s is calling close(), but client is running",
+                self.room_id,
             )
 
         # 如果session是自己创建的则关闭session
@@ -225,7 +228,7 @@ class WebSocketClientBase:
                 ver=1,
                 operation=operation,
                 seq_id=1,
-            )
+            ),
         )
         return header + body
 
@@ -241,7 +244,8 @@ class WebSocketClientBase:
             pass
         except Exception as e:
             logger.exception(
-                "room=%s _network_coroutine() finished with exception:", self.room_id
+                "room=%s _network_coroutine() finished with exception:",
+                self.room_id,
             )
             exc = e
         finally:
@@ -282,7 +286,8 @@ class WebSocketClientBase:
             except AuthError:
                 # 认证失败了，应该重新获取token再重连
                 logger.exception(
-                    "room=%d auth failed, trying init_room() again", self.room_id
+                    "room=%d auth failed, trying init_room() again",
+                    self.room_id,
                 )
                 self._need_init_room = True
             finally:
@@ -292,7 +297,9 @@ class WebSocketClientBase:
             # 准备重连
             retry_count += 1
             logger.warning(
-                "room=%d is reconnecting, retry_count=%d", self.room_id, retry_count
+                "room=%d is reconnecting, retry_count=%d",
+                self.room_id,
+                retry_count,
             )
             await asyncio.sleep(1)
 
@@ -463,13 +470,17 @@ class WebSocketClientBase:
             if header.ver == ProtoVer.BROTLI:
                 # 压缩过的先解压，为了避免阻塞网络线程，放在其他线程执行
                 body = await asyncio.get_running_loop().run_in_executor(
-                    None, brotli.decompress, body
+                    None,
+                    brotli.decompress,
+                    body,
                 )
                 await self._parse_ws_message(body)
             elif header.ver == ProtoVer.DEFLATE:
                 # web端已经不用zlib压缩了，但是开放平台会用
                 body = await asyncio.get_running_loop().run_in_executor(
-                    None, zlib.decompress, body
+                    None,
+                    zlib.decompress,
+                    body,
                 )
                 await self._parse_ws_message(body)
             elif header.ver == ProtoVer.NORMAL:

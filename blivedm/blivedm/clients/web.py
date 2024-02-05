@@ -213,7 +213,8 @@ class BLiveClient(ws_base.WebSocketClientBase):
                     return False
         except (aiohttp.ClientConnectionError, asyncio.TimeoutError):
             logger.exception(
-                "room=%d _init_room_id_and_owner() failed:", self._tmp_room_id
+                "room=%d _init_room_id_and_owner() failed:",
+                self._tmp_room_id,
             )
             return False
         return True
@@ -300,5 +301,5 @@ class BLiveClient(ws_base.WebSocketClientBase):
         if self._host_server_token is not None:
             auth_params["key"] = self._host_server_token
         await self._websocket.send_bytes(
-            self._make_packet(auth_params, ws_base.Operation.AUTH)
+            self._make_packet(auth_params, ws_base.Operation.AUTH),
         )
